@@ -1,0 +1,74 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import TagList from '../../components/TagList.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getRelated } from '../../utils/related';
+
+export async function getStaticPaths() {
+  const all = await getCollection('articles');
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+
+const { entry, all } = Astro.props;
+const { Content } = await render(entry);
+const { manual, auto } = getRelated(entry, all);
+const { title, description, date, updated, tags, cover } = entry.data;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description,
+  inLanguage: 'zh-TW',
+  datePublished: date.toISOString(),
+  dateModified: (updated ?? date).toISOString(),
+  keywords: tags.join(','),
+  mainEntityOfPage: pageUrl,
+  publisher: { '@type': 'Organization', name: '佳士國際' },
+};
+---
+
+<BaseLayout title={title} description={description} type="article" jsonLd={jsonLd}>
+  <article data-pagefind-body>
+    <h1>{title}</h1>
+    <p class="meta">
+      發布日期：<time datetime={date.toISOString()}>{date.toLocaleDateString('zh-TW')}</time>
+      {updated && (
+        <>
+          ｜ 更新：
+          <time datetime={updated.toISOString()}>{updated.toLocaleDateString('zh-TW')}</time>
+        </>
+      )}
+    </p>
+    <TagList tags={tags} />
+    {cover && <Image src={cover} alt={title} widths={[480, 800]} sizes="100vw" />}
+    <div class="article-body">
+      <Content />
+    </div>
+    <p class="notice" data-pagefind-ignore>
+      本文為一般衛教資訊，不能取代醫師之診斷與治療。
+      <br />
+      如有不適，請向醫事人員諮詢。 Devicare 與 佳士國際 關心您。
+    </p>
+  </article>
+
+  {manual.length > 0 && (
+    <section data-pagefind-ignore>
+      <h2>推薦閱讀</h2>
+      {manual.map((a) => (
+        <ArticleCard article={a} />
+      ))}
+    </section>
+  )}
+  {auto.length > 0 && (
+    <section data-pagefind-ignore>
+      <h2>相關文章</h2>
+      {auto.map((a) => (
+        <ArticleCard article={a} />
+      ))}
+    </section>
+  )}
+</BaseLayout>
