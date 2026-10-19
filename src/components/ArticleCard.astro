@@ -1,0 +1,17 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { url } from '../utils/url';
+import TagList from './TagList.astro';
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+const { article } = Astro.props;
+---
+
+<article class="card">
+  <h3>
+    <a href={url(`articles/${article.id}/`)}>{article.data.title}</a>
+  </h3>
+  <p>{article.data.description}</p>
+  <TagList tags={article.data.tags} />
+</article>

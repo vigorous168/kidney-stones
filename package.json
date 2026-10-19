@@ -5,19 +5,36 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": ">=24"
+    "node": ">=24 <25"
   },
   "scripts": {
-    "eslint": "eslint . --fix",
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "check": "astro check",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint . --fix",
+    "format:check": "prettier . --check",
     "format": "prettier . --write",
-    "verify": "npm run format && npm run eslint"
+    "verify": "npm run format:check && npm run eslint && npm run check && npm run build"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^3.2.1",
+    "globals": "^17.13.0",
+    "pagefind": "^1.5.2",
     "prettier": "^3.9.10",
+    "prettier-plugin-astro": "^1.1.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.4.4",
+    "@astrojs/sitemap": "^3.7.4",
+    "@picocss/pico": "^2.1.1",
+    "astro": "^7.4.0"
   }
 }
