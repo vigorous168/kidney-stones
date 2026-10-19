@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vigorous168.github.io/sitemap-index.xml
+Sitemap: https://vigorous168.github.io/kidney-stones/sitemap-index.xml
