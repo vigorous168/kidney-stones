@@ -16,6 +16,7 @@
     "eslint:fix": "eslint . --fix",
     "format:check": "prettier . --check",
     "format": "prettier . --write",
+    "fix": "npm run format && npm run eslint:fix",
     "verify": "npm run format:check && npm run eslint && npm run check && npm run build"
   },
   "devDependencies": {
