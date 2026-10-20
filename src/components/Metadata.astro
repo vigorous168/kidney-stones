@@ -1,0 +1,21 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+type ArticleData = CollectionEntry<'articles'>['data'];
+
+interface Props {
+  datePublished: ArticleData['date'];
+  dateModified?: ArticleData['updated'];
+}
+const { datePublished, dateModified } = Astro.props;
+---
+
+<p class="meta">
+  發布日期：<time datetime={datePublished.toISOString()}>{datePublished.toLocaleDateString('zh-TW')}</time>
+  {dateModified && (
+    <>
+      ｜ 更新：
+      <time datetime={dateModified.toISOString()}>{dateModified.toLocaleDateString('zh-TW')}</time>
+    </>
+  )}
+</p>
