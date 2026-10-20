@@ -10,7 +10,17 @@ const articles = (await getCollection('articles')).sort((a, b) => {
 
   return bDatePublished - aDatePublished;
 });
-const allTags = [...new Set(articles.flatMap((a) => a.data.tags))].sort();
+
+const tagCounts = new Map<string, number>();
+for (const article of articles) {
+  for (const tag of new Set(article.data.tags)) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+const tagList = [...tagCounts.entries()]
+  .map(([tag, count]) => ({ tag, count }))
+  .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'zh-TW'));
+
 const pagefindBase = url('pagefind/');
 ---
 
@@ -44,9 +54,14 @@ const pagefindBase = url('pagefind/');
   </script>
   <h2>依標籤瀏覽</h2>
   <ul class="tags">
-    {allTags.map((t) => (
+    {tagList.map(({ tag, count }) => (
       <li>
-        <a href={url(`tags/${encodeURIComponent(t)}/`)}>#{t}</a>
+        <a href={url(`tags/${encodeURIComponent(tag)}/`)}>
+          #{tag}
+          <span class="tag-count" aria-label={`${count} 篇文章`}>
+            {count}
+          </span>
+        </a>
       </li>
     ))}
   </ul>
