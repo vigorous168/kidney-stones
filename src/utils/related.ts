@@ -26,10 +26,10 @@ export function getRelated(currentArticle: Article, allArticles: Article[], auto
     .map((article) => ({ article, score: article.data.tags.filter((tag) => tags.has(tag)).length }))
     .filter((x) => x.score > 0)
     .sort((x, y) => {
-      const xPublishedDate = x.article.data.updated?.valueOf() ?? x.article.data.date.valueOf();
-      const yPublishedDate = y.article.data.updated?.valueOf() ?? y.article.data.date.valueOf();
+      const xDatePublished = x.article.data.updated?.valueOf() ?? x.article.data.date.valueOf();
+      const yDatePublished = y.article.data.updated?.valueOf() ?? y.article.data.date.valueOf();
 
-      return y.score - x.score || yPublishedDate - xPublishedDate;
+      return y.score - x.score || yDatePublished - xDatePublished;
     })
     .slice(0, autoLimit)
     .map((x) => x.article);

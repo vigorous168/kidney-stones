@@ -1,17 +1,20 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { url } from '../utils/url';
+import Metadata from './Metadata.astro';
 import TagList from './TagList.astro';
 interface Props {
   article: CollectionEntry<'articles'>;
 }
 const { article } = Astro.props;
+const { title, description, tags, date: datePublished, updated: dateModified } = article.data;
 ---
 
 <article class="card">
   <h3>
-    <a href={url(`articles/${article.id}/`)}>{article.data.title}</a>
+    <a href={url(`articles/${article.id}/`)}>{title}</a>
   </h3>
-  <p>{article.data.description}</p>
-  <TagList tags={article.data.tags} />
+  <p>{description}</p>
+  <Metadata datePublished={datePublished} dateModified={dateModified} />
+  <TagList tags={tags} />
 </article>

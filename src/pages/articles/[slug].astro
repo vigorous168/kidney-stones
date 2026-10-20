@@ -2,7 +2,9 @@
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Metadata from '../../components/Metadata.astro';
 import TagList from '../../components/TagList.astro';
+import Disclaimer from '../../components/Disclaimer.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
 import { getRelated } from '../../utils/related';
 
@@ -14,7 +16,7 @@ export async function getStaticPaths() {
 const { entry, all } = Astro.props;
 const { Content } = await render(entry);
 const { manual, auto } = getRelated(entry, all);
-const { title, description, date, updated, tags, cover } = entry.data;
+const { title, description, date: datePublished, updated: dateModified, tags, cover } = entry.data;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 
 const jsonLd = {
@@ -23,8 +25,8 @@ const jsonLd = {
   headline: title,
   description,
   inLanguage: 'zh-TW',
-  datePublished: date.toISOString(),
-  dateModified: (updated ?? date).toISOString(),
+  datePublished: datePublished.toISOString(),
+  dateModified: (dateModified ?? datePublished).toISOString(),
   keywords: tags.join(','),
   mainEntityOfPage: pageUrl,
   publisher: { '@type': 'Organization', name: '佳士國際' },
@@ -34,25 +36,13 @@ const jsonLd = {
 <BaseLayout title={title} description={description} type="article" jsonLd={jsonLd}>
   <article data-pagefind-body>
     <h1>{title}</h1>
-    <p class="meta">
-      發布日期：<time datetime={date.toISOString()}>{date.toLocaleDateString('zh-TW')}</time>
-      {updated && (
-        <>
-          ｜ 更新：
-          <time datetime={updated.toISOString()}>{updated.toLocaleDateString('zh-TW')}</time>
-        </>
-      )}
-    </p>
+    <Metadata datePublished={datePublished} dateModified={dateModified} />
     <TagList tags={tags} />
     {cover && <Image src={cover} alt={title} widths={[480, 800]} sizes="100vw" />}
     <div class="article-body">
       <Content />
     </div>
-    <p class="notice" data-pagefind-ignore>
-      本文為一般衛教資訊，不能取代醫師之診斷與治療。
-      <br />
-      如有不適，請向醫事人員諮詢。 Devicare 與 佳士國際 關心您。
-    </p>
+    <Disclaimer />
   </article>
 
   {manual.length > 0 && (
