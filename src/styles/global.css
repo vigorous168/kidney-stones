@@ -91,6 +91,10 @@
   background: var(--pico-card-background-color);
 }
 
+.article-body p {
+  white-space: pre-line;
+}
+
 .article-body img {
   max-width: 100%;
   height: auto;
