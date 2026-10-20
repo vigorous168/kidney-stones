@@ -4,9 +4,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import { url } from '../utils/url';
 
-const articles = (await getCollection('articles')).sort(
-  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-);
+const articles = (await getCollection('articles')).sort((a, b) => {
+  const aDatePublished = a.data.updated?.valueOf() ?? a.data.date.valueOf();
+  const bDatePublished = b.data.updated?.valueOf() ?? b.data.date.valueOf();
+
+  return bDatePublished - aDatePublished;
+});
 const allTags = [...new Set(articles.flatMap((a) => a.data.tags))].sort();
 const pagefindBase = url('pagefind/');
 ---
