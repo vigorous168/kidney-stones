@@ -114,3 +114,7 @@
   display: block;
   overflow-x: auto;
 }
+
+.data-footnote-backref {
+  display: none;
+}
