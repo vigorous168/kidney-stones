@@ -115,6 +115,10 @@
   overflow-x: auto;
 }
 
+.article-body sup + sup {
+  margin-left: 2px;
+}
+
 .data-footnote-backref {
   display: none;
 }
